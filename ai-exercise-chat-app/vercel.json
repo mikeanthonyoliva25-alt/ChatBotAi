@@ -1,7 +1,7 @@
 {
-  "public": "./ai-exercise-chat-app/src",
-  "buildCommand": "echo 'Static site - no build needed'"
+  "outputDirectory": "src"
 }
+
 
 
 
