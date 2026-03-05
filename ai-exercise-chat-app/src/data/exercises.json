@@ -1,0 +1,58 @@
+[
+    {
+        "name": "Bodyweight Workout",
+        "duration": "30 minutes",
+        "intensity": "Moderate",
+        "equipment": "None",
+        "description": "A full-body workout using bodyweight exercises such as push-ups, squats, and lunges."
+    },
+    {
+        "name": "Yoga for Beginners",
+        "duration": "45 minutes",
+        "intensity": "Low",
+        "equipment": "Yoga mat",
+        "description": "A gentle yoga session focusing on flexibility and relaxation."
+    },
+    {
+        "name": "HIIT Cardio",
+        "duration": "20 minutes",
+        "intensity": "High",
+        "equipment": "None",
+        "description": "High-Intensity Interval Training that alternates between short bursts of intense activity and rest."
+    },
+    {
+        "name": "Resistance Band Workout",
+        "duration": "30 minutes",
+        "intensity": "Moderate",
+        "equipment": "Resistance bands",
+        "description": "A workout using resistance bands to build strength and endurance."
+    },
+    {
+        "name": "Dumbbell Strength Training",
+        "duration": "40 minutes",
+        "intensity": "High",
+        "equipment": "Dumbbells",
+        "description": "A strength training program focusing on major muscle groups using dumbbells."
+    },
+    {
+        "name": "Pilates",
+        "duration": "50 minutes",
+        "intensity": "Moderate",
+        "equipment": "None",
+        "description": "A low-impact workout that focuses on core strength, flexibility, and overall body awareness."
+    },
+    {
+        "name": "Cardio Dance",
+        "duration": "30 minutes",
+        "intensity": "High",
+        "equipment": "None",
+        "description": "A fun and energetic dance workout that combines cardio and dance moves."
+    },
+    {
+        "name": "Stretching Routine",
+        "duration": "15 minutes",
+        "intensity": "Low",
+        "equipment": "None",
+        "description": "A routine focused on stretching major muscle groups to improve flexibility."
+    }
+]

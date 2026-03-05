@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Exercise Chat System</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header>
+            <h1>AI Exercise Chat System</h1>
+            <p class="subtitle">Personalized workout forecast and weekly plan</p>
+        </header>
+
+        <main class="layout">
+            <section class="panel">
+                <h2>Chat</h2>
+                <div class="chat-box" id="chat-box">
+                    <!-- Chat messages will be displayed here -->
+                </div>
+                <div class="input-area">
+                    <input type="text" id="user-input" placeholder="Tell your goal (fat loss, muscle gain, fitness)..." />
+                    <button id="send-button">Generate</button>
+                </div>
+                <p class="hint">Tip: complete the profile form first for better results.</p>
+            </section>
+
+            <section class="panel user-data">
+                <h2>User Profile</h2>
+
+                <div class="grid-2">
+                    <div>
+                        <label for="age">Age</label>
+                        <input type="number" id="age" placeholder="e.g. 24" min="10" max="100" />
+                    </div>
+                    <div>
+                        <label for="sex">Sex</label>
+                        <select id="sex">
+                            <option value="">Select</option>
+                            <option value="female">Female</option>
+                            <option value="male">Male</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <label for="height">Height (cm)</label>
+                        <input type="number" id="height" placeholder="e.g. 165" min="80" max="250" />
+                    </div>
+                    <div>
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" placeholder="e.g. 70" min="20" max="350" />
+                    </div>
+                </div>
+
+                <label for="bmi">BMI (optional, auto-computed if height/weight given)</label>
+                <input type="number" id="bmi" placeholder="Enter BMI if you already know it" />
+
+                <label for="body-condition">Current Body Condition</label>
+                <input type="text" id="body-condition" placeholder="Normal, with fats, lean, etc." />
+
+                <label for="goal">Main Goal</label>
+                <select id="goal">
+                    <option value="fat_loss">Fat loss</option>
+                    <option value="muscle_gain">Muscle gain</option>
+                    <option value="maintenance">Maintenance / fitness</option>
+                </select>
+
+                <div class="grid-2">
+                    <div>
+                        <label for="days-per-week">Days per week</label>
+                        <input type="number" id="days-per-week" min="1" max="7" value="4" />
+                    </div>
+                    <div>
+                        <label for="minutes-per-day">Minutes per day</label>
+                        <input type="number" id="minutes-per-day" min="10" max="180" value="45" />
+                    </div>
+                </div>
+
+                <label for="busy-level">Schedule</label>
+                <select id="busy-level">
+                    <option value="low">Low (flexible)</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High (busy)</option>
+                </select>
+
+                <label for="location">Workout Location</label>
+                <select id="location">
+                    <option value="home">Home workout</option>
+                    <option value="gym">Gym</option>
+                </select>
+
+                <label for="exercise-preferences">Exercise Preferences (comma separated)</label>
+                <input type="text" id="exercise-preferences" placeholder="e.g. yoga, cardio, strength" />
+
+                <label for="available-tools">Available Tools (comma separated)</label>
+                <input type="text" id="available-tools" placeholder="e.g. dumbbells, resistance bands, mat" />
+            </section>
+
+            <section class="panel">
+                <h2>AI Generated Outcome</h2>
+                <div class="result-card" id="result-card">
+                    <p>Waiting for your first request...</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <small>Guidance only. Not a medical diagnosis.</small>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/bmi.js"></script>
+    <script src="scripts/outcomes.js"></script>
+    <script src="scripts/supabase-config.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
