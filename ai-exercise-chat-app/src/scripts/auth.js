@@ -103,10 +103,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Check if already logged in
-    supabase.auth.onAuthStateChange((event, session) => {
+    // Handle OAuth callback and session check
+    (async () => {
+        // Check if there's a session (including from OAuth redirect)
+        const { data: { session } } = await supabase.auth.getSession();
+        
         if (session) {
+            // Already logged in, redirect to chat
             window.location.href = 'index.html';
+            return;
         }
-    });
+
+        // Listen for auth state changes
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                window.location.href = 'index.html';
+            }
+        });
+    })();
 });
