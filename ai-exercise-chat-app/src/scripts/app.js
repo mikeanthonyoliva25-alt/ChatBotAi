@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // Wait a bit for OAuth callback to process
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
     if (sessionError || !session) {
         window.location.href = 'auth.html';
