@@ -22,7 +22,68 @@ body {
 .app-shell {
     max-width: 1200px;
     margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-bar {
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
     padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-content h1 {
+    margin: 0 0 6px;
+    font-size: 24px;
+}
+
+.header-content .subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.header-nav {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.nav-link,
+.nav-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    background: #f0f4ff;
+    color: var(--primary);
+}
+
+.nav-link.active {
+    color: var(--primary);
+    background: #f0f4ff;
+}
+
+.nav-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.nav-btn:hover {
+    background: var(--primary-hover);
 }
 
 header {
@@ -47,6 +108,8 @@ h2 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 14px;
+    padding: 20px;
+    flex: 1;
 }
 
 .panel {
@@ -91,6 +154,8 @@ label {
 
 input[type="text"],
 input[type="number"],
+input[type="email"],
+input[type="password"],
 select {
     width: 100%;
     padding: 9px 10px;
@@ -158,6 +223,8 @@ button:hover {
 footer {
     margin-top: 10px;
     color: var(--muted);
+    padding: 20px;
+    text-align: center;
 }
 
 @media (max-width: 1050px) {

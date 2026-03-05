@@ -1,0 +1,32 @@
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#grad1)"/>
+  
+  <!-- Rounded corners -->
+  <rect width="1024" height="1024" rx="240" fill="url(#grad1)"/>
+  
+  <!-- Dumbbells (fitness icon) -->
+  <!-- Left dumbbell -->
+  <rect x="150" y="400" width="80" height="30" rx="15" fill="white" opacity="0.9"/>
+  <circle cx="170" cy="420" r="60" fill="white" opacity="0.8"/>
+  <rect x="230" y="400" width="80" height="30" rx="15" fill="white" opacity="0.9"/>
+  
+  <!-- Right dumbbell -->
+  <rect x="594" y="400" width="80" height="30" rx="15" fill="white" opacity="0.9"/>
+  <circle cx="854" cy="420" r="60" fill="white" opacity="0.8"/>
+  <rect x="674" y="400" width="80" height="30" rx="15" fill="white" opacity="0.9"/>
+  
+  <!-- Heart icon center -->
+  <path d="M 512 650 C 512 650 450 720 380 720 C 320 720 280 680 280 620 C 280 560 320 520 380 520 C 450 520 512 590 512 590 C 512 590 574 520 644 520 C 704 520 744 560 744 620 C 744 680 704 720 644 720 C 574 720 512 650 512 650 Z" fill="white" opacity="0.9"/>
+  
+  <!-- Text -->
+  <text x="512" y="900" font-size="60" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial, sans-serif">AI Fitness</text>
+</svg>

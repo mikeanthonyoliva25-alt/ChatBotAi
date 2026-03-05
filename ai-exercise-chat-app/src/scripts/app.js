@@ -1,6 +1,32 @@
 // Main JavaScript file for the AI Exercise Chat System
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    const config = window.SUPABASE_CONFIG;
+    const supabase = config?.SUPABASE_URL && config?.SUPABASE_ANON_KEY
+        ? window.supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY)
+        : null;
+
+    // Check authentication
+    if (!supabase) {
+        window.location.href = 'auth.html';
+        return;
+    }
+
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !session) {
+        window.location.href = 'auth.html';
+        return;
+    }
+
+    const userId = session.user.id;
+
+    // Setup logout button
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.href = 'auth.html';
+    });
+
     const chatBox = document.getElementById('chat-box');
     const resultCard = document.getElementById('result-card');
     const userInput = document.getElementById('user-input');
@@ -21,8 +47,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const availableToolsInput = document.getElementById('available-tools');
 
     const conversationId = crypto.randomUUID();
-    const supabase = createSupabaseClient();
     let conversationReady = false;
+    const userIdColumnSupport = {};
+    let conversationOwnerColumn;
+
+    async function hasUserIdColumn(tableName) {
+        if (tableName in userIdColumnSupport) {
+            return userIdColumnSupport[tableName];
+        }
+
+        const { error } = await supabase
+            .from(tableName)
+            .select('user_id')
+            .limit(1);
+
+        const supported = !(error && error.code === '42703');
+        userIdColumnSupport[tableName] = supported;
+        return supported;
+    }
+
+    async function getConversationOwnerColumn() {
+        if (conversationOwnerColumn !== undefined) {
+            return conversationOwnerColumn;
+        }
+
+        const candidates = ['user_id', 'owner_id', 'profile_id', 'account_id'];
+
+        for (const columnName of candidates) {
+            const { error } = await supabase
+                .from('conversations')
+                .select(columnName)
+                .limit(1);
+
+            if (!(error && error.code === '42703')) {
+                conversationOwnerColumn = columnName;
+                return conversationOwnerColumn;
+            }
+        }
+
+        conversationOwnerColumn = null;
+        return conversationOwnerColumn;
+    }
 
     sendButton.addEventListener('click', handleSend);
     userInput.addEventListener('keydown', (event) => {
@@ -41,7 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const message = userInput.value.trim();
         if (!message) return;
 
-        await ensureConversation();
+        const ok = await ensureConversation();
+        if (!ok) {
+            displayMessage('Could not start a session right now. Please try again.', 'ai');
+            return;
+        }
 
         displayMessage(message, 'user');
         userInput.value = '';
@@ -58,6 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
         displayMessage(aiReply, 'ai');
         await saveMessage('assistant', aiReply);
         await savePlan(profile, outcome);
+
+        // Show success notification
+        console.log('✅ Data saved successfully!');
     }
 
     function getUserProfile() {
@@ -147,26 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    function createSupabaseClient() {
-        const config = window.SUPABASE_CONFIG;
-        const hasConfig =
-            !!config &&
-            typeof config.SUPABASE_URL === 'string' &&
-            typeof config.SUPABASE_ANON_KEY === 'string' &&
-            config.SUPABASE_URL.length > 0 &&
-            config.SUPABASE_ANON_KEY.length > 0;
-
-        if (!hasConfig || !window.supabase?.createClient) {
-            displayMessage('Supabase is not configured yet. Running in local-only mode.', 'ai');
-            return null;
-        }
-
-        return window.supabase.createClient(config.SUPABASE_URL, config.SUPABASE_ANON_KEY);
-    }
-
     async function saveAssessment(profile) {
-        if (!supabase) return;
-
+        const includeUserId = await hasUserIdColumn('assessments');
         const payload = {
             conversation_id: conversationId,
             age: profile.age,
@@ -184,29 +238,41 @@ document.addEventListener('DOMContentLoaded', () => {
             available_tools: profile.tools
         };
 
+        if (includeUserId) {
+            payload.user_id = userId;
+        }
+
         const { error } = await supabase.from('assessments').insert(payload);
         if (error) {
-            console.error('Failed to save assessment:', error.message);
+            console.error('❌ Failed to save assessment:', error.message);
+        } else {
+            console.log('✅ Assessment saved');
         }
     }
 
     async function saveMessage(role, content) {
-        if (!supabase) return;
-
-        const { error } = await supabase.from('messages').insert({
+        const includeUserId = await hasUserIdColumn('messages');
+        const payload = {
             conversation_id: conversationId,
             role,
             content
-        });
+        };
+
+        if (includeUserId) {
+            payload.user_id = userId;
+        }
+
+        const { error } = await supabase.from('messages').insert(payload);
 
         if (error) {
             console.error('Failed to save message:', error.message);
+        } else {
+            console.log('✅ Message saved:', role);
         }
     }
 
     async function savePlan(profile, outcome) {
-        if (!supabase) return;
-
+        const includeUserId = await hasUserIdColumn('plans');
         const payload = {
             conversation_id: conversationId,
             goal: profile.goal,
@@ -218,21 +284,37 @@ document.addEventListener('DOMContentLoaded', () => {
             summary: outcome.summary
         };
 
+        if (includeUserId) {
+            payload.user_id = userId;
+        }
+
         const { error } = await supabase.from('plans').insert(payload);
         if (error) {
-            console.error('Failed to save plan:', error.message);
+            console.error('❌ Failed to save plan:', error.message);
+        } else {
+            console.log('✅ Plan saved');
         }
     }
 
     async function ensureConversation() {
-        if (!supabase || conversationReady) return;
+        if (conversationReady) return true;
 
-        const { error } = await supabase.from('conversations').insert({ id: conversationId });
-        if (error) {
-            console.error('Failed to create conversation:', error.message);
-            return;
+        const ownerColumn = await getConversationOwnerColumn();
+        const payload = { id: conversationId };
+
+        if (ownerColumn) {
+            payload[ownerColumn] = userId;
         }
 
+        const { error } = await supabase.from('conversations').insert(payload);
+        if (error) {
+            console.error('❌ Failed to create conversation:', error.message);
+            console.error('Conversation payload:', payload);
+            return false;
+        }
+
+        console.log('✅ Conversation created');
         conversationReady = true;
+        return true;
     }
 });
